@@ -41,6 +41,7 @@
 
     <Button
         android:id="@+id/choose_deck"
+        android:onClick="chooseDeck"
         android:layout_width="376dp"
         android:layout_height="56dp"
         android:layout_marginEnd="16dp"

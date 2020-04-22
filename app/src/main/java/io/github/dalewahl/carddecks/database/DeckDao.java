@@ -21,12 +21,18 @@ public interface DeckDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCategory(Category category);
 
-    @Query("INSERT INTO card (deck_id, front_text, front_image, back_text, back_image) VALUES (:deck_id, :front_text, :front_image, :back_text, :back_image)")
-    void create_category(int deck_id, String front_text, String front_image, String back_text, String back_image);
+//    @Query("INSERT INTO card (deck_id, front_text, front_image, back_text, back_image) VALUES (:deck_id, :front_text, :front_image, :back_text, :back_image)")
+//    void create_category(int deck_id, String front_text, String front_image, String back_text, String back_image);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertCard(Card card);
+
+    @Query("SELECT * FROM deck WHERE last = 1")
+    List<Deck> lastDeck();
 
     @Query("SELECT * FROM card WHERE deck_id = :deck_id")
-    List<Card> getDeck(int deck_id);
+    List<Card> getDeck(long deck_id);
 
-    @Query("SELECT name FROM deck")
+    @Query("SELECT universal_id FROM deck")
     List<String> deckNames();
 }

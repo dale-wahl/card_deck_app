@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Card Decks</string>
+    <string name="card_text">\"\"</string>
 </resources>

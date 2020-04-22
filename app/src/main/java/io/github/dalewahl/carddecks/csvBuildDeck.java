@@ -16,13 +16,15 @@ import io.github.dalewahl.carddecks.database.Deck;
 public class csvBuildDeck {
     InputStream inputStream;
 
-    public csvBuildDeck(InputStream inputStream) {
+    public csvBuildDeck(InputStream inputStream, boolean last_deck) {
         this.inputStream = inputStream;
         long deck_id = 0;
 
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(inputStream, Charset.forName("UTF-8")));
         String line = "";
+        // For testing/reloading decks
+        // Who am I kidding? It's for when I load things COMPLETELY wrong.
         //MainActivity.database.clearAllTables();
         try {
             while ((line = reader.readLine()) != null) {
@@ -35,14 +37,16 @@ public class csvBuildDeck {
                         Log.d("csvBuildDeck", "Deck already loaded:" + tokens[1]);
                         break;
                     }
-                    if (tokens.length != 3) {
+                    if (tokens.length != 5) {
                         Log.d("csvBuildDeck", "Deck format incorrect.");
                         break;
                     }
                     Deck deck = new Deck();
-                    deck.name = tokens[1];
-                    deck.language = tokens[2];
-                    deck.last = true;
+                    deck.universal_id = tokens[1];
+                    deck.name = tokens[2];
+                    deck.language = tokens[3];
+                    deck.deck_image = tokens[4];
+                    deck.last = last_deck;
                     deck_id = MainActivity.database.deckDao().insertDeck(deck);
                     Log.d("csvBuildDeck", "New Deck ID:" + deck_id);
                     Log.d("Loading Deck", "Loaded:" + Arrays.toString(tokens));
@@ -77,10 +81,12 @@ public class csvBuildDeck {
                     }
                     Card card = new Card();
                     card.deck_id = deck_id;
+                    Log.d("Loading Card", "Check deck_id:" + deck_id);
                     card.front_text = tokens[0];
                     card.front_image = tokens[1];
                     card.back_text = tokens[2];
                     card.back_image = tokens[3];
+                    MainActivity.database.deckDao().insertCard(card);
                     Log.d("Loading Cards", "Loaded:" + Arrays.toString(tokens));
                 }
             }

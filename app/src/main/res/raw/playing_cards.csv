@@ -1,4 +1,4 @@
-Deck;default_playing_cards;global;;;;
+Deck;default_playing_cards;Playing Cards;global;card_back;;
 Categories;Game;;;;;
 6D;card_6d;NULL;card_back;;;
 6S;card_6s;NULL;card_back;;;
