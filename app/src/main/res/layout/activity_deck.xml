@@ -16,7 +16,6 @@
         android:paddingBottom="15dp"
         app:layout_constraintStart_toStartOf="@+id/flip_card"
         app:layout_constraintTop_toTopOf="parent"/>
-    //app:srcCompat="@drawable/card_10c"
 
     <Button
         android:id="@+id/prev_card"
@@ -51,8 +50,12 @@
         android:layout_width="400dp"
         android:layout_height="590dp"
         android:background="?android:selectableItemBackground"
+        android:textAllCaps="false"
+        android:fontFamily="sans-serif-black"
+        android:lineSpacingMultiplier="2"
         android:onClick="flipCard"
-        android:text="@string/card_text"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/cardImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

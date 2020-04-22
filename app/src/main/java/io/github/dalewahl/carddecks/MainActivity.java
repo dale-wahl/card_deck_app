@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         database = Room
                 .databaseBuilder(getApplicationContext(), DecksDatabase.class, "decks")
-                // DON'T FORGET THAT THIS IS PROBABLY NOT HOW TO HANDLE DATABASE CHANGES!!!
+                // TODO DON'T FORGET THAT THIS IS PROBABLY NOT HOW TO HANDLE DATABASE CHANGES!!!
                 .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build();
@@ -42,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
         lastButtonImage = findViewById(R.id.last_deck);
         List<Deck> decks = MainActivity.database.deckDao().lastDeck();
         Log.d("Main: Last Deck", "Number of last decks:" + decks.size());
+        last_deck = decks.get(0);
+        lastButtonImage.setImageResource(getResources().getIdentifier(last_deck.deck_image, "drawable", getPackageName()));
+    }
+
+    @Override
+    public void onResume() {  // After a pause OR at startup
+        super.onResume();
+        //Refresh image to last deck played
+        List<Deck> decks = MainActivity.database.deckDao().lastDeck();
         last_deck = decks.get(0);
         lastButtonImage.setImageResource(getResources().getIdentifier(last_deck.deck_image, "drawable", getPackageName()));
     }

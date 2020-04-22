@@ -38,4 +38,10 @@ public interface DeckDao {
 
     @Query("SELECT universal_id FROM deck")
     List<String> deckNames();
+
+    @Query("UPDATE deck SET last = 0")
+    void removeLast();
+
+    @Query("UPDATE deck SET last = 1 WHERE id = :deck_id")
+    void setLast(long deck_id);
 }

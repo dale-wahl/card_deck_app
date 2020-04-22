@@ -14,13 +14,16 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:background="?android:selectableItemBackground"
-            android:layout_weight=".8"
             android:gravity="center"/>
+
         <TextView
+            android:id="@+id/choose_item_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/choose_item_text"/>
+            android:fontFamily="sans-serif-black"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

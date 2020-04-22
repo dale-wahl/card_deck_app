@@ -39,6 +39,8 @@ public class ChooseActivity extends AppCompatActivity implements ChooseAdapter.I
         Intent intent = new Intent(this, DeckActivity.class);
         intent.putExtra("deck_id", adapter.getItem(position).id);
         Log.d("ChooseActivity", "Open Deck ID:" + adapter.getItem(position).id);
+        MainActivity.database.deckDao().removeLast();
+        MainActivity.database.deckDao().setLast(adapter.getItem(position).id);
         startActivity(intent);
     }
 }
