@@ -33,6 +33,9 @@ public interface DeckDao {
     @Query("SELECT * FROM card WHERE deck_id = :deck_id")
     List<Card> getDeck(long deck_id);
 
+    @Query("SELECT * FROM deck")
+    List<Deck> allDecks();
+
     @Query("SELECT universal_id FROM deck")
     List<String> deckNames();
 }

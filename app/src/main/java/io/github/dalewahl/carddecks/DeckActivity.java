@@ -35,11 +35,10 @@ public class DeckActivity extends AppCompatActivity {
         button = findViewById(R.id.flip_card);
 
         deck_id = getIntent().getLongExtra("deck_id", 0);
-        Log.d("Load Deck", "Open Last Deck ID:" + deck_id);
+        //Log.d("Load Deck", "Open Deck ID:" + deck_id);
 
         current_deck = MainActivity.database.deckDao().getDeck(deck_id);
-        Log.d("Load Deck", "Open Last Deck:" + current_deck);
-        Log.d("Load Deck", "Last Deck size:" + current_deck.size());
+        Log.d("Load Deck", "Deck size:" + current_deck.size());
 
         deck_size = current_deck.size();
         shuffle();
@@ -102,7 +101,7 @@ public class DeckActivity extends AppCompatActivity {
     }
 
     public void applyNextCard() {
-        // Seperated from oClick to use elsewhere
+        // Separated from onClick to use elsewhere
         if (current_card == deck_size - 1) {
             // End of deck reached
             // Currently just start over; TODO add notification

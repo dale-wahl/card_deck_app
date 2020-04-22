@@ -1,53 +1,44 @@
 package io.github.dalewahl.carddecks;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-public class ChooseActivity extends AppCompatActivity {
-    private ImageView choose_image1;
-    private TextView choose_text1;
-    private ImageView choose_image2;
-    private TextView choose_text2;
-    private ImageView choose_image3;
-    private ImageView choose_image4;
+import java.util.List;
+
+import io.github.dalewahl.carddecks.database.Deck;
+
+public class ChooseActivity extends AppCompatActivity implements ChooseAdapter.ItemClickListener {
+
+    ChooseAdapter adapter;
+    private List<Deck> decks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
 
-        //for
+        decks = MainActivity.database.deckDao().allDecks();
 
-        choose_image1 = findViewById(R.id.choose_image1);
-        choose_text1 = findViewById(R.id.choose_text1);
-        choose_image2 = findViewById(R.id.choose_image2);
-        choose_text2 = findViewById(R.id.choose_text2);
-        choose_image3 = findViewById(R.id.choose_image3);
-        choose_image4 = findViewById(R.id.choose_image4);
-
-        choose_image1.setImageResource(R.drawable.card_as);
-        choose_text1.setText("TESTING!");
-        choose_image2.setImageResource(R.drawable.card_ac);
-        choose_text2.setText("TESTING!");
-        choose_image3.setImageResource(R.drawable.card_ad);
-        choose_image4.setImageResource(R.drawable.card_ah);
-
-
+        // set up the RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        int numberOfColumns = 2;
+        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        adapter = new ChooseAdapter(this, decks);
+        adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
     }
 
-    public void loadChoices(String image, String text) {
-
-    }
-
-    public void chooseNewDeck(View view) {
-        Intent intent = new Intent(this, ChooseActivity.class);
-        Log.d("ChooseActivity", "Choosing Deck");
+    @Override
+    public void onItemClick(View view, int position) {
+        Intent intent = new Intent(this, DeckActivity.class);
+        intent.putExtra("deck_id", adapter.getItem(position).id);
+        Log.d("ChooseActivity", "Open Deck ID:" + adapter.getItem(position).id);
         startActivity(intent);
     }
 }
