@@ -23,9 +23,7 @@ public class csvBuildDeck {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(inputStream, Charset.forName("UTF-8")));
         String line = "";
-        // For testing/reloading decks
-        // Who am I kidding? It's for when I load things COMPLETELY wrong.
-        //MainActivity.database.clearAllTables();
+
         try {
             while ((line = reader.readLine()) != null) {
                 // Split the line into different tokens (using the comma as a separator).
@@ -47,6 +45,7 @@ public class csvBuildDeck {
                     deck.language = tokens[3];
                     deck.deck_image = tokens[4];
                     deck.last = last_deck;
+                    deck.resource_image = true;
                     deck_id = MainActivity.database.deckDao().insertDeck(deck);
                     Log.d("csvBuildDeck", "New Deck ID:" + deck_id);
                     Log.d("Loading Deck", "Loaded:" + Arrays.toString(tokens));

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,7 +41,7 @@ public class ChooseAdapter extends RecyclerView.Adapter<ChooseAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Context context = holder.imageView.getContext();
         holder.textView.setText(mData.get(position).name);
-        holder.imageView.setImageResource(context.getResources().getIdentifier(mData.get(position).deck_image, "drawable", context.getPackageName()));
+        loadDeckImageView(context, holder, mData.get(position));
     }
 
     // total number of cells
@@ -81,5 +82,13 @@ public class ChooseAdapter extends RecyclerView.Adapter<ChooseAdapter.ViewHolder
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);
+    }
+
+    public static void loadDeckImageView(Context context, ViewHolder holder, Deck deck) {
+        if (deck.resource_image) {
+            holder.imageView.setImageResource(context.getResources().getIdentifier(deck.deck_image, "drawable", context.getPackageName()));
+        } else {
+            holder.imageView.setImageBitmap(MainActivity.loadImageFromStorage(deck.deck_image, deck.universal_id + "_image.png"));
+        }
     }
 }

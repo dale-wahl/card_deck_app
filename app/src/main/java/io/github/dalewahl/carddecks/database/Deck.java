@@ -23,4 +23,7 @@ public class Deck {
 
     @ColumnInfo(name = "last")
     public boolean last;
+
+    @ColumnInfo(name = "resource_image")
+    public boolean resource_image;
 }

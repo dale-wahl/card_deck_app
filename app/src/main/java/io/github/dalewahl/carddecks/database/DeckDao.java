@@ -44,4 +44,7 @@ public interface DeckDao {
 
     @Query("UPDATE deck SET last = 1 WHERE id = :deck_id")
     void setLast(long deck_id);
+
+    @Query("UPDATE deck SET deck_image = :deck_image WHERE id = :deck_id")
+    void updateDeckImage(String deck_image, long deck_id);
 }
