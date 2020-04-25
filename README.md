@@ -1,9 +1,9 @@
 # Android Card Deck App
 
-Card Deck application for android that allows users to choose from a variety of decks to use however they please. This includes conversation starters to have fun with friends and loved ones or get to know strangers, flip card packs to practice language skills, trivia, and more. Users are able to download additional decks as well.
+Card Deck application for android that allows users to choose from a variety of decks and use them however they please. This includes conversation starters to have fun with friends and loved ones or get to know strangers, flip card packs to practice language and other skills, trivia, and more. Users are able to download additional decks as well.
 
 ## About
-Cards are versitile; they can be simple text, double-sided text, or include pictures on one or more side. They are stored locally in an SQL database on your device so you can play offline. The app can also connect to an library online allowing the user to look through new decks (with images and descriptions) and download them to their devices.
+Cards are versitile; they can be simple text, double-sided text, or include pictures on one or more side. They are stored locally in an SQL database on your device so you can play offline. The app can also connect to an online library allowing the user to look through new decks (with images and descriptions) and download them to their devices if they choose.
 
 Application built in Android Studio in Java. Uses Room SQL database and Volley for internet request. 
 
@@ -19,7 +19,7 @@ Application built in Android Studio in Java. Uses Room SQL database and Volley f
   * Deck table
   * Card table
   * Categories
-* Default decks installed with application
+* Default decks installed with application (csv files)
 * Deck UI
   * UI changes to handle cards with different combinations of photo and text
   * Decks shuffle on start
@@ -37,6 +37,7 @@ Application built in Android Studio in Java. Uses Room SQL database and Volley f
 * Add search and filter feature (categories already stored in database)
 * Option to choose language (language already stored in database)
 * Option to maintain deck state (currently does not save place in deck if application exited and resuffles)
+* Handling both csv files (for default decks) and JSON (for downloading decks on internet) is redundant
 
 ## Github Repo
 [card_deck_app](https://github.com/dale-wahl/card_deck_app)
