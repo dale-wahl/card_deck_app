@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         // For testing/reloading decks
         // Who am I kidding? It's for when I load things COMPLETELY wrong.
-        //database.clearAllTables();
+        database.clearAllTables();
 
         InputStream inputStream = getResources().openRawResource(R.raw.playing_cards);
         new csvBuildDeck(inputStream, false);
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         inputStream = getResources().openRawResource(R.raw.convo_starter);
         new csvBuildDeck(inputStream, true);
 
-        new DownloadDeck("https://raw.githubusercontent.com/dale-wahl/additional_decks/master/french_common_phrases.txt", getApplicationContext());
+        //new DownloadDeck("https://raw.githubusercontent.com/dale-wahl/additional_decks/master/french_common_phrases.txt", getApplicationContext());
 
         lastButtonImage = findViewById(R.id.last_deck);
         List<Deck> decks = MainActivity.database.deckDao().lastDeck();

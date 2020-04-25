@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -90,5 +89,10 @@ public class ChooseAdapter extends RecyclerView.Adapter<ChooseAdapter.ViewHolder
         } else {
             holder.imageView.setImageBitmap(MainActivity.loadImageFromStorage(deck.deck_image, deck.universal_id + "_image.png"));
         }
+    }
+    public void reload() {
+        // TODO test!!!
+        mData = MainActivity.database.deckDao().allDecks();
+        notifyDataSetChanged();
     }
 }

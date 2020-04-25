@@ -11,7 +11,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -20,12 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Dictionary;
 
 import io.github.dalewahl.carddecks.database.Card;
 import io.github.dalewahl.carddecks.database.Category;
@@ -53,6 +49,7 @@ public class DownloadDeck {
                         Log.d("DownloadDeck", "Deck already loaded:" + responseJSON.getString("universal_id"));
                     } else {
                         // Download the deck image
+                        // TODO catch no image? All decks should have deck image...
                         String image_url = responseJSON.getString("deck_image");
                         new DownloadImage().execute(image_url);
 
@@ -69,10 +66,9 @@ public class DownloadDeck {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("JSON Request","That didn't work!" + error);
+                Log.e("JSON Request", "That didn't work!" + error);
             }
         });
-
         // Add the request to the RequestQueue.
         queue.add(request);
     }
@@ -84,8 +80,12 @@ public class DownloadDeck {
         universal_id = deck.universal_id;
         deck.name = responseJSON.getString("name");
         deck.language = responseJSON.getString("languages");
+        // tells it that the image will be downloaded (if it exists)
         deck.resource_image = false;
 
+        //deck.deck_url = responseJSON.getString("deck_url");
+
+        // image_path here seems to be null, i.e. not updated yet
         deck.deck_image = image_path;
         Log.d("JSON Request", "URL saved to deck_image:" + image_path);
         // Remove prior lasts
@@ -117,9 +117,6 @@ public class DownloadDeck {
             MainActivity.database.deckDao().insertCard(card);
             Log.d("JSON Request", "Card:" + card.front_text);
         }
-
-
-
     }
 
     private class DownloadImage extends AsyncTask<String, Void, Bitmap> {
@@ -136,7 +133,7 @@ public class DownloadDeck {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            // load the bitmap into the ImageView!
+            // load the bitmap
             try {
                 image_path = saveToInternalStorage(context, bitmap, universal_id + "_image.png", "imageDir");
                 // NOW that we have the image_path, we can update the deck_image in database
@@ -154,7 +151,7 @@ public class DownloadDeck {
         // path to /data/data/yourapp/app_data/directory_name
         File directory = cw.getDir(directory_name, Context.MODE_PRIVATE);
         // Create imageDir
-        File mypath=new File(directory,filename);
+        File mypath = new File(directory, filename);
         Log.d("Save Photo:", "saveToInternalStorage mypath:" + mypath);
 
         FileOutputStream fos = null;
@@ -166,49 +163,8 @@ public class DownloadDeck {
             e.printStackTrace();
         } finally {
             fos.close();
-            }
+        }
         Log.d("Save Photo:", "saveToInternalStorage directory.getAbsolutePath():" + directory.getAbsolutePath());
         return directory.getAbsolutePath();
-    }
-
-//    // Save an image
-//    public static void saveFile(Context context, Bitmap b, String picName) throws IOException {
-//        FileOutputStream fos = null;
-//        try {
-//            fos = context.openFileOutput(picName, Context.MODE_PRIVATE);
-//            b.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//            Log.d("Saving Photo:", "SAVED!" + fos);
-//        }
-//        catch (FileNotFoundException e) {
-//            Log.d("Saving Photo:", "file not found");
-//            e.printStackTrace();
-//        }
-//        catch (IOException e) {
-//            Log.d("Saving Photo:", "io exception");
-//            e.printStackTrace();
-//        } finally {
-//            fos.close();
-//        }
-//    }
-
-    // Not sure how to use this yet.
-    public static Bitmap loadBitmap(Context context, String picName) throws IOException {
-        Bitmap b = null;
-        FileInputStream fis = null;
-        try {
-            fis = context.openFileInput(picName);
-            b = BitmapFactory.decodeStream(fis);
-        }
-        catch (FileNotFoundException e) {
-            Log.d("Load Image", "file not found");
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            Log.d("Load Image", "io exception");
-            e.printStackTrace();
-        } finally {
-            fis.close();
-        }
-        return b;
     }
 }
