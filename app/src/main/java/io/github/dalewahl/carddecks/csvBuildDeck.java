@@ -64,10 +64,13 @@ public class csvBuildDeck {
                         }
                         Category category = new Category();
                         category.deck_id = deck_id;
-                        category.category = cat;
+                        category.category = cat.toLowerCase();
                         MainActivity.database.deckDao().insertCategory(category);
                     }
-                    Log.d("Loading Categories", "Loaded:" + Arrays.toString(tokens));
+                    Category category = new Category();
+                    category.deck_id = deck_id;
+                    category.category = "all categories";
+                    MainActivity.database.deckDao().insertCategory(category);
                     continue;
                 }
                 if (deck_id == 0) {
@@ -89,6 +92,7 @@ public class csvBuildDeck {
                     Log.d("Loading Cards", "Loaded:" + Arrays.toString(tokens));
                 }
             }
+            inputStream.close();
         } catch (IOException e1) {
             Log.e("MainActivity", "Error" + line, e1);
             e1.printStackTrace();

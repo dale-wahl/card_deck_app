@@ -79,7 +79,7 @@ public class DownloadDeck {
         deck.universal_id = responseJSON.getString("universal_id");
         universal_id = deck.universal_id;
         deck.name = responseJSON.getString("name");
-        deck.language = responseJSON.getString("languages");
+        deck.language = responseJSON.getString("languages").toLowerCase();
         // tells it that the image will be downloaded (if it exists)
         deck.resource_image = false;
 
@@ -99,10 +99,14 @@ public class DownloadDeck {
         for (int i = 0; i < categories.length(); i++) {
             Category category = new Category();
             category.deck_id = deck_id;
-            category.category = categories.getString(i);
+            category.category = categories.getString(i).toLowerCase();
             Log.d("JSON Request", "Category:" + category.category);
             MainActivity.database.deckDao().insertCategory(category);
         }
+        Category category = new Category();
+        category.deck_id = deck_id;
+        category.category = "all categories";
+        MainActivity.database.deckDao().insertCategory(category);
 
         // Load Cards
         JSONArray cards = responseJSON.getJSONArray("cards");

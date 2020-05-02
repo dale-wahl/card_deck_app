@@ -51,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
         inputStream = getResources().openRawResource(R.raw.convo_starter);
         new csvBuildDeck(inputStream, false);
 
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //new DownloadDeck("https://raw.githubusercontent.com/dale-wahl/additional_decks/master/french_common_phrases.txt", getApplicationContext());
 
         lastButtonImage = findViewById(R.id.last_deck);
@@ -87,10 +93,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             File f=new File(path, filename);
             Log.d("loadImageFromStorage", "file f:" + f);
-            b = BitmapFactory.decodeStream(new FileInputStream(f));
+            FileInputStream input = new FileInputStream(f);
+            b = BitmapFactory.decodeStream(input);
+            input.close();
         }
         catch (FileNotFoundException e)
         {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return b;
@@ -98,8 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static void loadDeckImageButton(Context context, ImageButton button, Deck deck) {
         if (deck.resource_image) {
-            button.setImageResource(context.getResources().getIdentifier(deck.deck_image, "drawable", context.getPackageName()));
-        } else {
+            if (!deck.deck_image.equals("NULL")) {
+                button.setImageResource(context.getResources().getIdentifier(deck.deck_image, "drawable", context.getPackageName()));
+            } else {
+                button.setImageResource(context.getResources().getIdentifier("blank_back", "drawable", context.getPackageName()));
+            }
+        }else {
             button.setImageBitmap(loadImageFromStorage(deck.deck_image, deck.universal_id + "_image.png"));
         }
     }

@@ -8,56 +8,51 @@
 
     <ImageView
         android:id="@+id/cardImage"
-        android:layout_width="400dp"
-        android:layout_height="590dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:paddingBottom="15dp"
-        app:layout_constraintStart_toStartOf="@+id/flip_card"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <Button
-        android:id="@+id/prev_card"
-        android:layout_width="160dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:onClick="prevCard"
-        android:text="Last Card"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardImage"
-        app:layout_constraintVertical_bias="0.236" />
-
-    <Button
-        android:id="@+id/next_card"
-        android:layout_width="160dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:onClick="nextCard"
-        android:text="Next Card"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/prev_card"
-        app:layout_constraintTop_toBottomOf="@+id/cardImage"
-        app:layout_constraintVertical_bias="0.236" />
-
-    <Button
-        android:id="@+id/flip_card"
-        android:layout_width="400dp"
-        android:layout_height="590dp"
-        android:background="?android:selectableItemBackground"
-        android:textAllCaps="false"
-        android:fontFamily="sans-serif-black"
-        android:lineSpacingMultiplier="2"
-        android:onClick="flipCard"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/cardImage"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:padding="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/flip_card"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:background="?android:selectableItemBackground"
+        android:fontFamily="sans-serif-black"
+        android:lineSpacingMultiplier="2"
+        android:onClick="flipCard"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardImage"
+        app:layout_constraintEnd_toEndOf="@+id/cardImage"
+        app:layout_constraintStart_toStartOf="@+id/cardImage"
+        app:layout_constraintTop_toTopOf="@+id/cardImage" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/prev_card"
+            android:layout_width="160dp"
+            android:layout_height="70dp"
+            android:onClick="prevCard"
+            android:text="Last Card" />
+
+        <Button
+            android:id="@+id/next_card"
+            android:layout_width="160dp"
+            android:layout_height="70dp"
+            android:onClick="nextCard"
+            android:text="Next Card" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

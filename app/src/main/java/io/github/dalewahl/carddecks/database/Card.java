@@ -1,5 +1,7 @@
 package io.github.dalewahl.carddecks.database;
 
+import android.text.Editable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

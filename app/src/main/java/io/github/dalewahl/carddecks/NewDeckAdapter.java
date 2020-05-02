@@ -37,6 +37,7 @@ import io.github.dalewahl.carddecks.database.Deck;
 public class NewDeckAdapter extends RecyclerView.Adapter<NewDeckAdapter.ViewHolder> {
 
     private List<Temp_Deck> decks;
+
     private LayoutInflater inflater;
     private NewDeckAdapter.ItemClickListener mClickListener;
 

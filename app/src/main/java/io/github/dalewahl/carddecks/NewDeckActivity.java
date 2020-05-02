@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,10 +34,20 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter.ItemClickListener {
+public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter.ItemClickListener, AdapterView.OnItemSelectedListener{
     NewDeckAdapter adapter;
-    public List<Temp_Deck> decks = new ArrayList<>();
+    private List<Temp_Deck> decks = new ArrayList<>();
+    private List<Temp_Deck> filtered = new ArrayList<>();
     public int image_count = 0;
+
+    // Spinners for filtering
+    private Spinner language_spinner;
+    // Need to find way to pull in languages from JSON...
+    private static final String[] languages = {"All Languages", "English", "French"};
+
+    private Spinner category_spinner;
+    // Need to find way to pull in languages from JSON...
+    private static final String[] categories = {"All Categories", "Conversation Starter", "Trivia", "Flashcards"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +57,26 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
         loadDecks();
 
         RecyclerView recyclerView = findViewById(R.id.new_deck_recycler_view);
-        int numberOfColumns = 2;
+        int numberOfColumns = getResources().getInteger(R.integer.grid_columns);
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
         adapter = new NewDeckAdapter(this, decks);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+
+        language_spinner = findViewById(R.id.language_spinner);
+        category_spinner = findViewById(R.id.category_spinner);
+        ArrayAdapter<String> lang_spinner_adapter = new ArrayAdapter<String>(NewDeckActivity.this,
+                android.R.layout.simple_spinner_item,languages);
+        ArrayAdapter<String> cat_spinner_adapter = new ArrayAdapter<String>(NewDeckActivity.this,
+                android.R.layout.simple_spinner_item,categories);
+
+        lang_spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        language_spinner.setAdapter(lang_spinner_adapter);
+        language_spinner.setOnItemSelectedListener(this);
+
+        cat_spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category_spinner.setAdapter(cat_spinner_adapter);
+        category_spinner.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -56,7 +84,24 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
         new DownloadDeck(adapter.getItem(position).getDeck_url(), getApplicationContext());
         setResult(1);
         // Need a pause before finishing for the deck to load...
-        mHandler.postDelayed(mRunnable, 1500);
+        mHandler.postDelayed(mRunnable, 1000);
+    }
+
+
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        decks.clear();
+        Log.d("NewDeckActivity", "Language Spinner:" + language_spinner.getSelectedItem().toString());
+        for (Temp_Deck deck : filtered) {
+            if (deck.getLanguages().contains(language_spinner.getSelectedItem().toString().toLowerCase()) && deck.getCategories().contains(category_spinner.getSelectedItem().toString().toLowerCase())) {
+                decks.add(deck);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     // All this to do a 2 second delay...
@@ -96,13 +141,32 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
                         String deck_url = new_deck.getString("deck_url");
                         String deck_image_url = new_deck.getString("deck_image_url");
 
+                        // Get languages
+                        List<String> languages = new ArrayList<>();
+                        JSONArray language_array = new_deck.getJSONArray("languages");
+                        for (int j = 0; j < language_array.length(); j++) {
+                            String temp_language = language_array.getString(j).toLowerCase();
+                            languages.add(temp_language);
+                        }
+                        languages.add("all languages");
+
+                        // Get categories
+                        List<String> categories = new ArrayList<>();
+                        JSONArray category_array = new_deck.getJSONArray("categories");
+                        for (int j = 0; j < category_array.length(); j++) {
+                            String temp_category = category_array.getString(j).toLowerCase();
+                            categories.add(temp_category);
+                        }
+                        categories.add("all categories");
+
                         // Go get the deck image
                         new retrieveDeckImage().execute(deck_image_url);
 
-                        decks.add(new Temp_Deck(name, universal_id, deck_url, deck_image_url));
+                        decks.add(new Temp_Deck(name, universal_id, deck_url, deck_image_url, languages, categories));
                         Log.d("NewDeckActivity", "Loaded deck:" + name);
                         Log.d("NewDeckActivity", "Loaded deck:" + deck_image_url);
                     }
+                    filtered.addAll(decks);
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -139,5 +203,36 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
             image_count ++;
             adapter.notifyDataSetChanged();
         }
+    }
+
+    public void filter(final String language) {
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+
+//        decks.clear();
+//        if (language.equals("ALL")) {
+//            decks.addAll(filtered);
+//
+//        } else {
+//            for (Temp_Deck deck : filtered) {
+//                if (deck.getLanguages().contains(language.toLowerCase())) {
+//                    decks.add(deck);
+//                }
+//            }
+//        }
+//
+////                ((Activity) getApplicationContext()).runOnUiThread(new Runnable() {
+////                    @Override
+////                    public void run() {
+//                        // Notify the List that the DataSet has changed...
+//        adapter.notifyDataSetChanged();
+////                    }
+//                });
+//
+//            }
+//        }).start();
+
     }
 }
