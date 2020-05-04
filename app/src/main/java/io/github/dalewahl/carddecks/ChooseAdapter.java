@@ -92,10 +92,10 @@ public class ChooseAdapter extends RecyclerView.Adapter<ChooseAdapter.ViewHolder
                     long deck_id = mData.get(getAdapterPosition()).id;
                     switch (item.getItemId()) {
                         case R.id.edit_deck:
+                            // Opens Edit Deck Activity
                             Intent intent = new Intent(v.getContext(), EditDeckActivity.class);
                             intent.putExtra("id", deck_id);
                             getActivity(v.getContext()).startActivityForResult(intent, 3);
-
                             return true;
                         case R.id.delete_deck:
                             // Pull last deck viewed cause that causes problems if deleted

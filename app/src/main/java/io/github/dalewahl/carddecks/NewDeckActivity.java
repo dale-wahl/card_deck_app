@@ -90,7 +90,6 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         filtered.clear();
-        Log.d("NewDeckActivity", "Language Spinner:" + language_spinner.getSelectedItem().toString());
         for (Temp_Deck deck : decks) {
             if (deck.getLanguages().contains(language_spinner.getSelectedItem().toString().toLowerCase()) && deck.getCategories().contains(category_spinner.getSelectedItem().toString().toLowerCase())) {
                 filtered.add(deck);
@@ -163,8 +162,6 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
                         new retrieveDeckImage().execute(deck_image_url);
 
                         decks.add(new Temp_Deck(name, universal_id, deck_url, deck_image_url, languages, categories));
-                        Log.d("NewDeckActivity", "Loaded deck:" + name);
-                        Log.d("NewDeckActivity", "Loaded deck:" + deck_image_url);
                     }
                     filtered.addAll(decks);
                     adapter.notifyDataSetChanged();
@@ -175,7 +172,6 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("NewDeckAdapter Request", "That didn't work!" + error);
             }
         });
         // Add the request to the RequestQueue.
@@ -187,11 +183,9 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
         protected Bitmap doInBackground(String... strings) {
             try {
                 URL url = new URL(strings[0]);
-                Log.d("NewDeckAdapter", "Downloaded Image");
                 return BitmapFactory.decodeStream(url.openStream());
             }
             catch (IOException e) {
-                Log.e("NewDeckAdapter", "Download deck image error", e);
                 return null;
             }
         }

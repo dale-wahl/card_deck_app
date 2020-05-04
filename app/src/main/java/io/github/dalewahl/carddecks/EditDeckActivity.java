@@ -1,6 +1,5 @@
 package io.github.dalewahl.carddecks;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -42,17 +40,11 @@ public class EditDeckActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Card card = new Card();
-                card.deck_id = deck_id;
-                card.front_text = "New card!";
-                card.front_image = "NULL";
-                card.back_text = "NULL";
-                card.back_image = "NULL";
-                long id = MainActivity.database.deckDao().insertCard(card);
+                Card card = createNewCard(deck_id);
 
                 Intent intent = new Intent(getApplicationContext(), EditCardActivity.class);
                 intent.putExtra("deck_id", card.deck_id);
-                intent.putExtra("id", id);
+                intent.putExtra("id", card.id);
                 intent.putExtra("front_text", card.front_text);
                 intent.putExtra("back_text", card.back_text);
                 startActivityForResult(intent, 0);
@@ -68,13 +60,21 @@ public class EditDeckActivity extends AppCompatActivity {
         }
     }
 
+    public static Card createNewCard(long deck_id){
+        Card card = new Card();
+        card.deck_id = deck_id;
+        card.front_text = "New card!";
+        card.front_image = "NULL";
+        card.back_text = "NULL";
+        card.back_image = "NULL";
+        MainActivity.database.deckDao().insertCard(card);
+        return card;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
         adapter.reload();
     }
-
-    // Attempting to add a swipe to delete thing
-
 }

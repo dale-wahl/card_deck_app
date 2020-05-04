@@ -40,13 +40,11 @@ public class DownloadDeck {
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("RESPONSE", "Response:" + response);
-
                 try {
                     responseJSON = new JSONObject(response);
 
                     if (MainActivity.database.deckDao().deckNames().contains(responseJSON.getString("universal_id"))) {
-                        Log.d("DownloadDeck", "Deck already loaded:" + responseJSON.getString("universal_id"));
+
                     } else {
                         // Download the deck image
                         // TODO catch no image? All decks should have deck image...
@@ -60,13 +58,12 @@ public class DownloadDeck {
                     }
 
                 } catch (JSONException e) {
-                    Log.e("JSON Request", "Deck json error", e);
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("JSON Request", "That didn't work!" + error);
             }
         });
         // Add the request to the RequestQueue.
@@ -87,12 +84,10 @@ public class DownloadDeck {
 
         // image_path here seems to be null, i.e. not updated yet
         deck.deck_image = image_path;
-        Log.d("JSON Request", "URL saved to deck_image:" + image_path);
         // Remove prior lasts
         MainActivity.database.deckDao().removeLast();
         deck.last = true;
         deck_id = MainActivity.database.deckDao().insertDeck(deck);
-        Log.d("JSON Request", "New Deck ID:" + deck_id);
 
         // Load Deck Categories
         JSONArray categories = responseJSON.getJSONArray("categories");
@@ -100,7 +95,6 @@ public class DownloadDeck {
             Category category = new Category();
             category.deck_id = deck_id;
             category.category = categories.getString(i).toLowerCase();
-            Log.d("JSON Request", "Category:" + category.category);
             MainActivity.database.deckDao().insertCategory(category);
         }
         Category category = new Category();
@@ -119,7 +113,6 @@ public class DownloadDeck {
             card.back_text = temp_card.getString("back_text");
             card.back_image = temp_card.getString("back_image");
             MainActivity.database.deckDao().insertCard(card);
-            Log.d("JSON Request", "Card:" + card.front_text);
         }
     }
 
@@ -130,7 +123,6 @@ public class DownloadDeck {
                 URL url = new URL(strings[0]);
                 return BitmapFactory.decodeStream(url.openStream());
             } catch (IOException e) {
-                Log.e("JSON Request", "Download image error", e);
                 return null;
             }
         }
@@ -142,8 +134,6 @@ public class DownloadDeck {
                 image_path = saveToInternalStorage(context, bitmap, universal_id + "_image.png", "imageDir");
                 // NOW that we have the image_path, we can update the deck_image in database
                 MainActivity.database.deckDao().updateDeckImage(image_path, deck_id);
-                Log.d("Save Photo:", "filename:" + universal_id + "_image.png");
-                Log.d("Save Photo:", "image_path:" + image_path);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -156,7 +146,6 @@ public class DownloadDeck {
         File directory = cw.getDir(directory_name, Context.MODE_PRIVATE);
         // Create imageDir
         File mypath = new File(directory, filename);
-        Log.d("Save Photo:", "saveToInternalStorage mypath:" + mypath);
 
         FileOutputStream fos = null;
         try {
@@ -168,7 +157,6 @@ public class DownloadDeck {
         } finally {
             fos.close();
         }
-        Log.d("Save Photo:", "saveToInternalStorage directory.getAbsolutePath():" + directory.getAbsolutePath());
         return directory.getAbsolutePath();
     }
 }

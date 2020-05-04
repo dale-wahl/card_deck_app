@@ -37,16 +37,15 @@ public class CreateDeckActivity extends AppCompatActivity {
     public void saveNewDeck(View view) {
         // Load Deck
         Deck deck = new Deck();
+        // Creating a "universal id"
         deck.universal_id = deck_name.getText().toString().replace(" ", "_")
                 .toLowerCase() + "_" + getRandomIntegerBetweenRange(1000,9999);
-        String universal_id = deck.universal_id;
-        Log.d("CreateDeck", "Universal ID:" + universal_id);
 
         deck.name = deck_name.getText().toString();
         deck.language = deck_language.getText().toString().trim().toLowerCase();
 
         // TODO create way to import image
-        // Right now just set to resource
+        // Right now just set to resource and image to NULL
         deck.resource_image = true;
         deck.deck_image = "NULL";
 
@@ -78,6 +77,10 @@ public class CreateDeckActivity extends AppCompatActivity {
 
         setResult(1);
         finish();
+
+        // Create the first card
+        EditDeckActivity.createNewCard(deck_id);
+
         Intent intent = new Intent(getApplicationContext(), EditDeckActivity.class);
         intent.putExtra("id", deck_id);
         startActivityForResult(intent, 3);

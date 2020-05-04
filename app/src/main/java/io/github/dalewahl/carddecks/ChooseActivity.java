@@ -5,7 +5,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +29,7 @@ public class ChooseActivity extends AppCompatActivity implements ChooseAdapter.I
     public List<Deck> filtered = new ArrayList<>();
 
     private Spinner category_spinner;
-    // Need to find way to pull in languages from JSON...
+    // Ideally this should pull in a a query
     private static final String[] categories = {"All Categories", "Conversation Starter", "Trivia", "Flashcards", "Custom"};
 
     public ChooseActivity() {
@@ -41,7 +40,14 @@ public class ChooseActivity extends AppCompatActivity implements ChooseAdapter.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
 
-        loadDecks();
+        // Occasionally when clicking too quickly in the download activity, this query fails
+        // I do not understand why
+        // But since I added this try catch, I have not been able to recreate the problem...
+        try {
+            loadDecks();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -52,7 +58,7 @@ public class ChooseActivity extends AppCompatActivity implements ChooseAdapter.I
         recyclerView.setAdapter(adapter);
 
         category_spinner = findViewById(R.id.category_spinner);
-        ArrayAdapter<String> cat_spinner_adapter = new ArrayAdapter<String>(ChooseActivity.this,
+        ArrayAdapter<String> cat_spinner_adapter = new ArrayAdapter<>(ChooseActivity.this,
                 android.R.layout.simple_spinner_item,categories);
         cat_spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category_spinner.setAdapter(cat_spinner_adapter);
@@ -110,7 +116,6 @@ public class ChooseActivity extends AppCompatActivity implements ChooseAdapter.I
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(this, DeckActivity.class);
         intent.putExtra("deck_id", adapter.getItem(position).id);
-        Log.d("ChooseActivity", "Open Deck ID:" + adapter.getItem(position).id);
         MainActivity.database.deckDao().removeLast();
         MainActivity.database.deckDao().setLast(adapter.getItem(position).id);
         startActivity(intent);
@@ -124,11 +129,11 @@ public class ChooseActivity extends AppCompatActivity implements ChooseAdapter.I
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         decks.clear();
-        Log.d("SpinnerFilter", "Selected:" + category_spinner.getSelectedItem().toString().toLowerCase());
         for (Deck deck : filtered) {
-            Log.d("SpinnerFilter", "Deck Categories:" + MainActivity.database.deckDao().deckCategories(deck.id));
-            if (MainActivity.database.deckDao().deckCategories(deck.id).contains(category_spinner.getSelectedItem().toString().toLowerCase())){
-                Log.d("SpinnerFilter", "Spinner works!");
+            // Category filter has to query database for deck categories each time to compare
+            // with choice; could be more efficient method
+            if (MainActivity.database.deckDao().deckCategories(deck.id)
+                    .contains(category_spinner.getSelectedItem().toString().toLowerCase())){
                 decks.add(deck);
             }
         }
