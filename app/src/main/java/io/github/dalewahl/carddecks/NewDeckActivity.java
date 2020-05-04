@@ -35,10 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter.ItemClickListener, AdapterView.OnItemSelectedListener{
-    NewDeckAdapter adapter;
+    private NewDeckAdapter adapter;
     private List<Temp_Deck> decks = new ArrayList<>();
     private List<Temp_Deck> filtered = new ArrayList<>();
-    public int image_count = 0;
+    private int image_count = 0;
 
     // Spinners for filtering
     private Spinner language_spinner;
@@ -59,15 +59,15 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
         RecyclerView recyclerView = findViewById(R.id.new_deck_recycler_view);
         int numberOfColumns = getResources().getInteger(R.integer.grid_columns);
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        adapter = new NewDeckAdapter(this, decks);
+        adapter = new NewDeckAdapter(this, filtered);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
         language_spinner = findViewById(R.id.language_spinner);
         category_spinner = findViewById(R.id.category_spinner);
-        ArrayAdapter<String> lang_spinner_adapter = new ArrayAdapter<String>(NewDeckActivity.this,
+        ArrayAdapter<String> lang_spinner_adapter = new ArrayAdapter<>(NewDeckActivity.this,
                 android.R.layout.simple_spinner_item,languages);
-        ArrayAdapter<String> cat_spinner_adapter = new ArrayAdapter<String>(NewDeckActivity.this,
+        ArrayAdapter<String> cat_spinner_adapter = new ArrayAdapter<>(NewDeckActivity.this,
                 android.R.layout.simple_spinner_item,categories);
 
         lang_spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -89,11 +89,11 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
 
 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        decks.clear();
+        filtered.clear();
         Log.d("NewDeckActivity", "Language Spinner:" + language_spinner.getSelectedItem().toString());
-        for (Temp_Deck deck : filtered) {
+        for (Temp_Deck deck : decks) {
             if (deck.getLanguages().contains(language_spinner.getSelectedItem().toString().toLowerCase()) && deck.getCategories().contains(category_spinner.getSelectedItem().toString().toLowerCase())) {
-                decks.add(deck);
+                filtered.add(deck);
             }
         }
         adapter.notifyDataSetChanged();
@@ -112,7 +112,7 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
     public class MyRunnable implements Runnable {
         private final WeakReference<Activity> mActivity;
 
-        public MyRunnable(Activity activity) {
+        private MyRunnable(Activity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -203,36 +203,5 @@ public class NewDeckActivity extends AppCompatActivity implements NewDeckAdapter
             image_count ++;
             adapter.notifyDataSetChanged();
         }
-    }
-
-    public void filter(final String language) {
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-
-//        decks.clear();
-//        if (language.equals("ALL")) {
-//            decks.addAll(filtered);
-//
-//        } else {
-//            for (Temp_Deck deck : filtered) {
-//                if (deck.getLanguages().contains(language.toLowerCase())) {
-//                    decks.add(deck);
-//                }
-//            }
-//        }
-//
-////                ((Activity) getApplicationContext()).runOnUiThread(new Runnable() {
-////                    @Override
-////                    public void run() {
-//                        // Notify the List that the DataSet has changed...
-//        adapter.notifyDataSetChanged();
-////                    }
-//                });
-//
-//            }
-//        }).start();
-
     }
 }
